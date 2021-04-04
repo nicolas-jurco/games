@@ -27,4 +27,7 @@ f2                      => change name of function
 f12                     => go to definition
 f12 + alt               => peek definition
 
+ctrl + k, m             => peek file language
 
+README.md:
+ctrl + k, v             => see readme preview
