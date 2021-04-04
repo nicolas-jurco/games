@@ -12,8 +12,13 @@
 }
 
 .snake{
-    background-color: blue;
+    background-color: greenyellow;
 }
+
+.snakehead{
+    background-color: green;
+}
+
 
 .apple{
     background-color: red;
