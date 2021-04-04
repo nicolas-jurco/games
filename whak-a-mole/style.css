@@ -1,0 +1,22 @@
+.square{
+    height: 200px;
+    width: 200px;
+    background-color: aquamarine;
+    border-style: solid;
+    border-color: black;
+}
+
+.grid{
+    display: flex;
+    flex-flow: row wrap;
+    height: 618px;
+    width: 618px;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.violet{
+    background-color:violet;
+    background-size: cover;
+}
