@@ -3,8 +3,12 @@
 const COLS = 10
 const ROWS = 10
 const SPEED = 0.2
-let intervalTime = 1000
 let interval = 0
+
+let upper_limits = []
+let bottom_limits = []
+let right_limits = []
+let left_limits = []
 
 let Direction = {
     'Up': -COLS,
@@ -15,6 +19,12 @@ let Direction = {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    for (let index = 0; index < COLS * ROWS; index++) {
+        let element = document.createElement("div")
+        element.setAttribute("id", index)
+        document.getElementsByClassName("grid")[0].appendChild(element)
+    }
+    calculateLimits()
     startGame()
 });
 
@@ -29,12 +39,17 @@ let direction = Direction.Init
 let divs = []
 
 // Start game configuration
-function startGame(params) {
-    for (let index = 0; index < COLS * ROWS; index++) {
-        let element = document.createElement("div")
-        element.setAttribute("id", index)
-        document.getElementsByClassName("grid")[0].appendChild(element)
-    }
+function startGame() {
+    let intervalTime = 1000
+    newSnakePosition = []
+    applePosition = 0
+    snakePosition = [0,1,2] // 0 index is head, last index is tail
+    direction = Direction.Init
+    divs.forEach((element) => {
+        element.classList = []
+    })
+
+    // TODO: check that when initializing snake, it is on same row
     snakePosition[0] = getRandomIntInclusive(0, COLS * ROWS)
     snakePosition[1] = snakePosition[0] + 1
     snakePosition[2] = snakePosition[1] + 1
@@ -48,6 +63,7 @@ function startGame(params) {
     });
 
     intervalTime = intervalTime * SPEED
+    console.log("interval time : " + intervalTime)
     interval = setInterval(moveSnake, intervalTime)
 
 }
@@ -57,17 +73,21 @@ function startGame(params) {
 // If key left or right => snake must move COLS size 
 // for each movement, must check if overflow
 function moveSnake(){
-    let newSnakePosition = snakePosition[0] + direction
     if(direction === Direction.Init)
         return
+    let newSnakePosition = snakePosition[0] + direction
     // TODO: check if snake hits himself
-    if(snakePosition.find((element) => element === newSnakePosition)){
+    if(snakePosition.find((element) => element === newSnakePosition)
+        || direction === Direction.Up && upper_limits.includes(snakePosition[0])
+        || direction === Direction.Down && bottom_limits.includes(snakePosition[0])
+        || direction === Direction.Right && right_limits.includes(snakePosition[0])
+        || direction === Direction.Left && left_limits.includes(snakePosition[0])
+    ){
         alert('you lost')
-        // TODO: restart the game
+        clearInterval(interval)
+        startGame()
         return
     }
-    // TODO: check if snake hits with borders
-    
     // TODO: check if snake hits apple
     if(newSnakePosition !== applePosition){
         divs[snakePosition[snakePosition.length-1]].classList.remove('snake')
@@ -86,17 +106,17 @@ function moveSnake(){
 
 document.addEventListener('keyup', (e) => {
 //   console.log(`KeyboardEvent: key='${e.key}' | code='${e.code}'`)
-    if (e.code === 'ArrowLeft') {
+    // !doesnt allow to change direction if already moving to oposite direction
+    if (e.code === 'ArrowLeft' && direction !== Direction.Right){
         direction = Direction.Left
-    } else if(e.code === 'ArrowUp'){
+    } else if(e.code === 'ArrowUp' && direction !== Direction.Down){
         direction = Direction.Up
-    } else if(e.code === 'ArrowRight'){
+    } else if(e.code === 'ArrowRight' && direction !== Direction.Left){
         direction = Direction.Right
-    } else if(e.code === 'ArrowDown'){
+    } else if(e.code === 'ArrowDown' && direction !== Direction.Up){
         direction = Direction.Down
         console.log(direction);
     }
-    // moveSnake()
 })
 
 function newApple() {
@@ -107,6 +127,15 @@ function newApple() {
         return
     }
     element.classList.add('apple')
+}
+
+function calculateLimits() {
+    for (let i = 0; i < COLS; i++) {
+        upper_limits.push(i)
+        bottom_limits.push((COLS * ROWS) - i - 1)
+        left_limits.push(i * ROWS)
+        right_limits.push(COLS + (ROWS * i) - 1)    
+    }
 }
 
 function getRandomIntInclusive(min, max) {
