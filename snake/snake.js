@@ -1,5 +1,7 @@
 // ! This const have to consider the size of the css .grid
 // TODO: change the size of the .grid dinamically depending on these consts
+// TODO: add start/restart button functionallity
+// TODO: add score functionallity
 const COLS = 10
 const ROWS = 10
 const SPEED = 0.2
@@ -40,6 +42,7 @@ let divs = []
 
 // Start game configuration
 function startGame() {
+    clearInterval(interval)
     let intervalTime = 1000
     newSnakePosition = []
     applePosition = 0
@@ -84,7 +87,6 @@ function moveSnake(){
         || direction === Direction.Left && left_limits.includes(snakePosition[0])
     ){
         alert('you lost')
-        clearInterval(interval)
         startGame()
         return
     }
@@ -119,6 +121,9 @@ document.addEventListener('keyup', (e) => {
     }
 })
 
+btn.addEventListener('click', () => {
+    startGame()
+})
 function newApple() {
     applePosition = getRandomIntInclusive(0, COLS * ROWS)
     let element = document.getElementById(applePosition)
